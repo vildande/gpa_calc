@@ -35,7 +35,7 @@ Fill this database however you like. This info will be used to calculate the gpa
 
 
 
-## Run the app
+### Run the app
 Run app.py 
 
 app.py will run a flask server at 127.0.0.1:5000. 
