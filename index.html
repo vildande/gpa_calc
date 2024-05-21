@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPA Calculator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+  }
+
+  #semesters-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  h3 {
+    margin-bottom: 5px;
+    font-size: 24px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+
+  .course {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+  }
+
+  .semester {
+    margin-bottom: 40px;
+  }
+
+  #cgpa {
+    margin-top: 40px;
+  }
+
+  form {
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  button {
+    margin-bottom: 10px;
+  }
+</style>
+
+</head>
+<body>
+
+<div id="semesters-container"></div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let semestersData = []; // Array to hold semesters and their courses
+
+    // Fetch semesters and their courses from the backend
+    fetch('/get_semesters')
+    .then(response => response.json())
+    .then(data => {
+        semestersData = data.semesters;
+        console.log(semestersData)
+        renderSemesters();
+    });
+
+    // Render semesters and their courses
+    function renderSemesters() {
+        const semestersContainer = document.getElementById('semesters-container');
+        semestersContainer.innerHTML = ''; // Clear previous content
+        
+        let totalCredits = 0;
+        let totalGradePoints = 0;
+
+        semestersData.forEach(semester => {
+            const semesterDiv = document.createElement('div');
+            semesterDiv.innerHTML = `<h3>${semester.name}</h3>`;
+            semester.courses.forEach(course => {
+                semesterDiv.innerHTML += `
+                    <div class="course">
+                        <p>
+                            Course: ${course.name} 
+                            Credits: ${course.credits} 
+                            Grade: ${course.grade}
+                        </p>
+                    </div>`;
+                
+                totalCredits += course.credits;
+                totalGradePoints += course.credits * course.grade;
+            });
+
+            // Calculate GPA for the semester
+            const semesterGpa = calculateSemesterGpa(semester.courses);
+            semesterDiv.innerHTML += `<p>GPA for the semester: ${semesterGpa}</p>`;
+            semestersContainer.appendChild(semesterDiv);
+           
+        });
+
+        // Calculate CGPA
+      const cgpa = totalGradePoints / totalCredits;
+      const cgpaFormatted = isNaN(cgpa) ? 'N/A' : cgpa.toFixed(2);
+      const cgpaDiv = document.createElement('div');
+      cgpaDiv.innerHTML = `<h3>CGPA: ${cgpaFormatted}</h3>`;
+      semestersContainer.appendChild(cgpaDiv);
+    }
+
+    // Function to calculate GPA for a semester
+    function calculateSemesterGpa(courses) {
+        let totalCredits = 0;
+        let totalGradePoints = 0;
+        courses.forEach(course => {
+            totalCredits += course.credits;
+            totalGradePoints += course.credits * course.grade;
+        });
+        if (totalCredits === 0) return 0;
+        return (totalGradePoints / totalCredits).toFixed(2);
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+
+# ignore all .md files
+*.md
+# except README
+!README.md
+
+
+
+# ignore the db stuff
+db_scripts/
+
+*.db
+
+
+# ignore vscode settings
+.vscode/
+
+
