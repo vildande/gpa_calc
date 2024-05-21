@@ -25,7 +25,7 @@ Semesters_courses - multiple semesters that have multiple courses
     id
     semester_id
     course_id
-    grade - the grade for the , in scale from 0 to 4, e.g.  2.33, 3,67, 4
+    grade - the grade for the course, in scale from 0 to 4, e.g.  2.33, 3.67, 4
 
 
 Fill this database however you like. This info will be used to calculate the gpa.
